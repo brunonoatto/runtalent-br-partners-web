@@ -1,16 +1,23 @@
-import { Suspense } from "react";
+import { Suspense, lazy } from "react";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { RoutesPathEnum } from "./types";
 
+const Home = lazy(() => import("@modules/home"));
+const Client = lazy(() => import("@modules/client"));
+
 const router = createBrowserRouter([
   {
     path: RoutesPathEnum.Home,
-    element: <Suspense fallback={<>Spinner...</>}>Home</Suspense>,
+    element: (
+      <Suspense fallback={<>Spinner...</>}>
+        <Home />
+      </Suspense>
+    ),
   },
   {
     path: `${RoutesPathEnum.cliente}/:cpf?`,
-    element: <div>Cliente</div>,
+    element: <Client />,
   },
   {
     path: "*",
