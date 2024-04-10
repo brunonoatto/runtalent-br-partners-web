@@ -1,14 +1,21 @@
 import React from "react";
+
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
+import CssBaseline from "@mui/material/CssBaseline";
+
+import Router from "./core/router/index.tsx";
+
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 async function enableMocking() {
   if (process.env.NODE_ENV !== "development") {
     return;
   }
 
-  const { worker } = await import("./api/mock/index.ts");
+  const { worker } = await import("./core/api/mock/index.ts");
 
   // `worker.start()` returns a Promise that resolves
   // once the Service Worker is up and ready to intercept requests.
@@ -18,7 +25,9 @@ async function enableMocking() {
 enableMocking().then(() => {
   ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-      <App />
+      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+      <CssBaseline />
+      <Router />
     </React.StrictMode>
   );
 });

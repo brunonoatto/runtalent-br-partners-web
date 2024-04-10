@@ -1,4 +1,4 @@
-import { clientSchema, type TClient } from "../schemas";
+import { TClient, clientSchema } from "../schemas";
 
 const clientStorageKey = "clients-storage";
 
