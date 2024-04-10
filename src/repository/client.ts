@@ -17,10 +17,14 @@ export class ClientRepository extends Map<string, TClient> {
       ) as TClient[];
 
       for (let i = 0; i < clientsStorageData.length; i++) {
-        const parseResult = clientSchema.safeParse(clientsStorageData[i]);
-
-        if (parseResult.success) {
-          this.set(parseResult.data.cpf, parseResult.data);
+        try {
+          this.set(clientsStorageData[i]);
+        } catch {
+          // aqui dei só um console.log para não travar o carregamento dos outros clientes
+          console.error(
+            "Erro ao carregar cliente do sessionStorage.",
+            clientsStorageData[i]
+          );
         }
       }
     } catch {
@@ -42,12 +46,14 @@ export class ClientRepository extends Map<string, TClient> {
     sessionStorage.setItem(clientStorageKey, sessionStorageValue);
   }
 
-  set(key: string, value: TClient): this {
+  set(value: unknown): this {
     const parseResult = this.parse(value);
 
-    if (parseResult.success) {
-      this.set(key, parseResult.data);
+    if (!parseResult.success) {
+      throw new Error("Objeto Cliente inválido.");
     }
+
+    super.set(parseResult.data.cpf, parseResult.data);
 
     this.save();
 
@@ -55,7 +61,7 @@ export class ClientRepository extends Map<string, TClient> {
   }
 
   delete(key: string): boolean {
-    const result = this.delete(key);
+    const result = super.delete(key);
 
     if (result) {
       this.save();
