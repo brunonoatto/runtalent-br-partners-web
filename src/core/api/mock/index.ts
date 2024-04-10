@@ -12,16 +12,8 @@ export const worker = setupWorker(
       return HttpResponse.json(responseData);
     }),
 
-    http.post("/client", ({ request }) => {
-      const data = request.json();
-
-      const responseData = clientRepository.set(data);
-
-      return HttpResponse.json(responseData);
-    }),
-
-    http.post("/client", ({ request }) => {
-      const data = request.json();
+    http.post("/client", async ({ request }) => {
+      const data = await request.json();
 
       const responseData = clientRepository.set(data);
 
