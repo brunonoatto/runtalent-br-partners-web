@@ -19,6 +19,7 @@ export const useGetClient = () => {
   const cpf = params.get("cpf");
 
   return useQuery({
+    enabled: !!cpf,
     queryKey: ["useGetClient", cpf],
     queryFn: async () => {
       if (!cpf) return null;
