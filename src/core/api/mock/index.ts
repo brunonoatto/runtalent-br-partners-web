@@ -1,6 +1,7 @@
 import { setupWorker } from "msw/browser";
 import { http, HttpResponse } from "msw";
-import { ClientRepository } from "../../repository";
+import { ClientRepository } from "@core/repository";
+import { onlyNumbers } from "@shared/string";
 
 const clientRepository = new ClientRepository();
 
@@ -15,7 +16,9 @@ export const worker = setupWorker(
     http.get("/client/:cpf", ({ params }) => {
       const { cpf } = params;
 
-      if (!cpf) {
+      const cpfValue = cpf && onlyNumbers(cpf as string);
+
+      if (!cpfValue) {
         new HttpResponse("Cliente não encontrado", {
           status: 404,
           headers: {
@@ -24,7 +27,7 @@ export const worker = setupWorker(
         });
       }
 
-      const responseData = clientRepository.get(cpf as string);
+      const responseData = clientRepository.get(cpfValue as string);
 
       return HttpResponse.json(responseData);
     }),
