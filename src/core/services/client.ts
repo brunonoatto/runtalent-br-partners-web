@@ -1,12 +1,29 @@
 import Api from "@core/api";
 import type { TClient } from "@core/schemas";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "react-router-dom";
 
-export const useGetUsers = () => {
+export const useGetClients = () => {
   return useQuery({
-    queryKey: ["useGetUsers"],
+    queryKey: ["useGetClients"],
     queryFn: async () => {
       const clients = await Api.Client.get();
+      return clients;
+    },
+  });
+};
+
+export const useGetClient = () => {
+  const [params] = useSearchParams();
+
+  const cpf = params.get("cpf");
+
+  return useQuery({
+    queryKey: ["useGetClient", cpf],
+    queryFn: async () => {
+      if (!cpf) return null;
+
+      const clients = await Api.Client.getClient(cpf);
       return clients;
     },
   });
