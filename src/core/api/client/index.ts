@@ -21,6 +21,8 @@ export const post = async (data: TClient) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
+  }).then<boolean>((response) => {
+    return response.json();
   });
 };
 
@@ -31,11 +33,15 @@ export const update = async (data: TClient) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
+  }).then<boolean>((response) => {
+    return response.json();
   });
 };
 
 export const remove = async (cpf: string) => {
   return fetch(`${URL_BASE}/${cpf}`, {
     method: "DELETE",
+  }).then<boolean>((response) => {
+    return response.json();
   });
 };
