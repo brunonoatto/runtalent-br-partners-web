@@ -1,24 +1,6 @@
-import React from "react";
-
 import ReactDOM from "react-dom/client";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import CssBaseline from "@mui/material/CssBaseline";
 
-import Router from "./core/router/index.tsx";
-
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-      retry: false,
-    },
-  },
-});
+import App from "./App.tsx";
 
 async function enableMocking() {
   if (process.env.NODE_ENV !== "development") {
@@ -33,13 +15,5 @@ async function enableMocking() {
 }
 
 enableMocking().then(() => {
-  ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-      <CssBaseline />
-      <QueryClientProvider client={queryClient}>
-        <Router />
-      </QueryClientProvider>
-    </React.StrictMode>
-  );
+  ReactDOM.createRoot(document.getElementById("root")!).render(<App />);
 });
