@@ -1,5 +1,5 @@
 import React from "react";
-import { CssBaseline } from "@mui/material";
+import { CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import "@fontsource/roboto/300.css";
@@ -7,6 +7,12 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import Router from "@core/router";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,12 +26,14 @@ const queryClient = new QueryClient({
 export default function App() {
   return (
     <React.StrictMode>
-      {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-      <CssBaseline />
+      <ThemeProvider theme={darkTheme}>
+        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+        <CssBaseline />
 
-      <QueryClientProvider client={queryClient}>
-        <Router />
-      </QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <Router />
+        </QueryClientProvider>
+      </ThemeProvider>
     </React.StrictMode>
   );
 }
