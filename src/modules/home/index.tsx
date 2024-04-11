@@ -26,8 +26,10 @@ import { useDeleteClient, useGetClients } from "@core/services/client";
 import { RoutesPathEnum } from "@core/router/types";
 import { useState } from "react";
 import type { TClient } from "@core/schemas";
+import useToast from "@core/store/useToast";
 
 export default function Home() {
+  const { toastSuccess, toastError } = useToast();
   const [modalData, setModalData] = useState<TClient>();
   const navigate = useNavigate();
   const { mutate: mudateDeleteClient } = useDeleteClient();
@@ -50,10 +52,11 @@ export default function Home() {
 
     mudateDeleteClient(modalData.cpf, {
       onSuccess: () => {
+        toastSuccess("Cliente deletado com sucesso!");
         refetch();
       },
       onError: () => {
-        // toaster error
+        toastError("Não foi possível deletar Cliente.");
       },
       onSettled: () => {
         setModalData(undefined);
@@ -63,10 +66,17 @@ export default function Home() {
 
   return (
     <Container>
-      <Box maxWidth="md" textAlign="center">
-        <Typography variant="h4">Lista de Clientes</Typography>
+      <Box
+        maxWidth="md"
+        textAlign="center"
+        mx="auto"
+        display="flex"
+        flexDirection="column"
+        gap={2}
+      >
+        <Box display="flex" justifyContent="space-between">
+          <Typography variant="h4">Lista de Clientes</Typography>
 
-        <Box textAlign="right">
           <Button onClick={handleAddClientClick}>
             <AddIcon /> Adicionar Cliente
           </Button>
@@ -111,7 +121,7 @@ export default function Home() {
 
         {data && data.length <= 0 && (
           <Box textAlign="center" sx={{ mt: 2 }}>
-            Nenhum Cliente cadastrado
+            Nenhum Cliente cadastrado!
           </Box>
         )}
 

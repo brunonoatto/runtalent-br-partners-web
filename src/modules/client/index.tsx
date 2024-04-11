@@ -11,11 +11,13 @@ import { Box, Button, Container, Grid, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { RoutesPathEnum } from "@core/router/types";
 import { onlyNumbers } from "@shared/string";
+import useToast from "@core/store/useToast";
 
 export default function Client() {
   const navigate = useNavigate();
   const { cpf: cpfParam } = useParams();
 
+  const { toastSuccess, toastError } = useToast();
   const { data: clientUpdated } = useGetClient();
   const { mutate: mutatePostClient } = usePostClient();
   const { mutate: mutateUpdateClient } = useUpdateClient();
@@ -26,18 +28,14 @@ export default function Client() {
     mode: "onSubmit",
     resolver: zodResolver(clientSchema),
   });
-  const { setValue, register, handleSubmit, getValues } = form;
+  const { setValue, register, handleSubmit } = form;
 
   const handlePostClient = (client: TClient) => {
     mutatePostClient(client, {
       onSuccess: () => {
-        console.log("success");
         successProcess("Cadastrado realizado com sucesso!");
       },
-      onError: () => {
-        console.log("erro");
-        // toaster error
-      },
+      onError: handleError,
       onSettled: handleSettled,
     });
   };
@@ -47,11 +45,13 @@ export default function Client() {
       onSuccess: () => {
         successProcess("Edição realizada com sucesso!");
       },
-      onError: () => {
-        // toaster error
-      },
+      onError: handleError,
       onSettled: handleSettled,
     });
+  };
+
+  const handleError = (e: any) => {
+    toastError(e.message);
   };
 
   const handleSettled = () => {
@@ -60,10 +60,9 @@ export default function Client() {
   };
 
   const successProcess = (message: string) => {
-    console.log(message);
-    // toaster "Edição realizada com sucesso!"
+    toastSuccess(message);
 
-    navigate(RoutesPathEnum.Home);
+    handleGoHome();
   };
 
   const handleValid: SubmitHandler<TClient> = (formData) => {
@@ -76,9 +75,12 @@ export default function Client() {
     }
   };
 
-  const handleInvalid: SubmitErrorHandler<TClient> = (a) => {
-    console.error("handleInvalid", { a, vlues: getValues() });
-    // toaster "Formulário inválido"
+  const handleInvalid: SubmitErrorHandler<TClient> = () => {
+    toastError("Formulário inválido.");
+  };
+
+  const handleGoHome = () => {
+    navigate(RoutesPathEnum.Home);
   };
 
   useEffect(() => {
@@ -93,7 +95,7 @@ export default function Client() {
 
   return (
     <Container>
-      <Box maxWidth="md" textAlign="center">
+      <Box maxWidth="md" textAlign="center" mx="auto">
         <Typography variant="h4" textAlign={"left"}>
           {isRegister
             ? "Inclusao de cadastro de Cliente"
@@ -153,7 +155,18 @@ export default function Client() {
                 {...register("phone", { setValueAs: onlyNumbers })}
               />
             </Grid>
-            <Grid item xs={12} textAlign="right">
+            <Grid
+              item
+              xs={12}
+              textAlign="right"
+              display="flex"
+              justifyContent="end"
+              gap={2}
+            >
+              <Button type="button" onClick={handleGoHome}>
+                Cancelar
+              </Button>
+
               <Button variant="contained" type="submit">
                 {isRegister ? "Cadastrar" : "Atualizar"}
               </Button>
