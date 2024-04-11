@@ -1,10 +1,13 @@
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { RoutesPathEnum } from "./types";
 
-const Home = lazy(() => import("@modules/home"));
-const Client = lazy(() => import("@modules/client"));
+import Home from "@modules/home";
+import Client from "@modules/client";
+// Com o lazy, da uma warning no MSW
+// const Home = lazy(() => import("@modules/home"));
+// const Client = lazy(() => import("@modules/client"));
 
 const router = createBrowserRouter([
   {
