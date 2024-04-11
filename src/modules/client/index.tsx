@@ -1,26 +1,25 @@
-import { SubmitErrorHandler, SubmitHandler, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type TClient, clientSchema } from "@core/schemas";
-import {
-  useGetClient,
-  usePostClient,
-  useUpdateClient,
-} from "@core/services/client";
+import { useGetClient } from "@core/services/client";
 import { useEffect } from "react";
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Typography,
+} from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
+import ClientForm from "@modules/client/client-form";
 import { RoutesPathEnum } from "@core/router/types";
-import { onlyNumbers } from "@shared/string";
-import useToast from "@core/store/useToast";
 
 export default function Client() {
   const navigate = useNavigate();
   const { cpf: cpfParam } = useParams();
 
-  const { toastSuccess, toastError } = useToast();
-  const { data: clientUpdated } = useGetClient();
-  const { mutate: mutatePostClient } = usePostClient();
-  const { mutate: mutateUpdateClient } = useUpdateClient();
+  const { data: clientUpdated, isLoading } = useGetClient();
 
   const isRegister = !cpfParam;
 
@@ -28,56 +27,7 @@ export default function Client() {
     mode: "onSubmit",
     resolver: zodResolver(clientSchema),
   });
-  const { setValue, register, handleSubmit } = form;
-
-  const handlePostClient = (client: TClient) => {
-    mutatePostClient(client, {
-      onSuccess: () => {
-        successProcess("Cadastrado realizado com sucesso!");
-      },
-      onError: handleError,
-      onSettled: handleSettled,
-    });
-  };
-
-  const handleUpdateClient = (client: TClient) => {
-    mutateUpdateClient(client, {
-      onSuccess: () => {
-        successProcess("Edição realizada com sucesso!");
-      },
-      onError: handleError,
-      onSettled: handleSettled,
-    });
-  };
-
-  const handleError = (e: any) => {
-    toastError(e.message);
-  };
-
-  const handleSettled = () => {
-    console.log("handleSettled");
-    // loading(false)
-  };
-
-  const successProcess = (message: string) => {
-    toastSuccess(message);
-
-    handleGoHome();
-  };
-
-  const handleValid: SubmitHandler<TClient> = (formData) => {
-    console.log("handleValid", { formData });
-    // loading(true);
-    if (isRegister) {
-      handlePostClient(formData);
-    } else {
-      handleUpdateClient(formData);
-    }
-  };
-
-  const handleInvalid: SubmitErrorHandler<TClient> = () => {
-    toastError("Formulário inválido.");
-  };
+  const { setValue } = form;
 
   const handleGoHome = () => {
     navigate(RoutesPathEnum.Home);
@@ -94,86 +44,35 @@ export default function Client() {
   }, [clientUpdated, setValue]);
 
   return (
-    <Container>
-      <Box maxWidth="md" textAlign="center" mx="auto">
-        <Typography variant="h4" textAlign={"left"}>
-          {isRegister
-            ? "Inclusao de cadastro de Cliente"
-            : "Edição de cadastro de Cliente"}
-        </Typography>
+    <FormProvider {...form}>
+      <Container>
+        <Box
+          maxWidth="md"
+          textAlign="center"
+          mx="auto"
+          display="flex"
+          flexDirection="column"
+          gap={2}
+        >
+          <Box display="flex" justifyContent="space-between">
+            <Typography variant="h4" textAlign={"left"}>
+              {isRegister
+                ? "Inclusao de cadastro de Cliente"
+                : "Edição de cadastro de Cliente"}
+            </Typography>
 
-        <form onSubmit={handleSubmit(handleValid, handleInvalid)}>
-          <Grid container spacing={2}>
-            <Grid item sm={12} md={6}>
-              {/* <TextField
-                variant="standard"
-                label="Nome"
-                {...register("name")}
-              /> */}
-              Name
-              <input type="text" {...register("name")} />
-            </Grid>
-            <Grid item sm={12} md={6}>
-              {/* <TextMaskCustom
-                label="CPF"
-                inputProps={{
-                  mask: "000.000.000-00",
-                  ...register("cpf", {
-                    setValueAs: onlyNumbers,
-                  }),
-                }}
-              /> */}
-              CPF
-              <input
-                type="text"
-                {...register("cpf", {
-                  setValueAs: onlyNumbers,
-                  disabled: !isRegister,
-                })}
-              />
-            </Grid>
-            <Grid item sm={12} md={6}>
-              {/* <TextField
-                variant="standard"
-                label="E-mail"
-                {...register("email")}
-              /> */}
-              Email
-              <input type="email" {...register("email")} />
-            </Grid>
-            <Grid item sm={12} md={6}>
-              {/* <TextMaskCustom
-                label="Telefone"
-                inputProps={{
-                  mask: "(00) 00000-0000",
-                  ...register("phone"),
-                }}
-              /> */}
-              Telefone
-              <input
-                type="text"
-                {...register("phone", { setValueAs: onlyNumbers })}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              textAlign="right"
-              display="flex"
-              justifyContent="end"
-              gap={2}
-            >
-              <Button type="button" onClick={handleGoHome}>
-                Cancelar
-              </Button>
+            <Button onClick={handleGoHome}>Home</Button>
+          </Box>
 
-              <Button variant="contained" type="submit">
-                {isRegister ? "Cadastrar" : "Atualizar"}
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
-      </Box>
-    </Container>
+          {!isRegister && isLoading && <CircularProgress sx={{ mx: "auto" }} />}
+
+          {!isRegister && !isLoading && !clientUpdated && (
+            <Alert severity="error">Cliente não cadastrado.</Alert>
+          )}
+
+          {(isRegister || (!isLoading && clientUpdated)) && <ClientForm />}
+        </Box>
+      </Container>
+    </FormProvider>
   );
 }
