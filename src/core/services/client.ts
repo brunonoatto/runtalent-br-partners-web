@@ -6,10 +6,7 @@ import { useParams } from "react-router-dom";
 export const useGetClients = () => {
   return useQuery({
     queryKey: ["useGetClients"],
-    queryFn: async () => {
-      const clients = await Api.Client.get();
-      return clients;
-    },
+    queryFn: Api.Client.get,
   });
 };
 
@@ -30,24 +27,18 @@ export const useGetClient = () => {
 
 export const usePostClient = () => {
   return useMutation<unknown, unknown, TClient>({
-    mutationFn: async (client) => {
-      return Api.Client.post(client);
-    },
+    mutationFn: Api.Client.post,
   });
 };
 
 export const useUpdateClient = () => {
   return useMutation<unknown, unknown, TClient>({
-    mutationFn: async (client) => {
-      return Api.Client.update(client);
-    },
+    mutationFn: Api.Client.update,
   });
 };
 
 export const useDeleteClient = () => {
   return useMutation<unknown, unknown, string>({
-    mutationFn: async (id) => {
-      return Api.Client.remove(id);
-    },
+    mutationFn: Api.Client.remove,
   });
 };
