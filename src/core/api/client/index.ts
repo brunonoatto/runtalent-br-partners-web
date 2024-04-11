@@ -9,7 +9,7 @@ export const get = async () => {
 };
 
 export const getClient = async (cpf: string) => {
-  return fetch(`${URL_BASE}/${cpf}`).then<TClient[]>((response) => {
+  return fetch(`${URL_BASE}/${cpf}`).then<TClient>((response) => {
     return response.json();
   });
 };
