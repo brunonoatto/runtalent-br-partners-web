@@ -7,6 +7,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import Router from "@core/router";
+import Toaster from "@shared/components/toaster";
 
 const darkTheme = createTheme({
   palette: {
@@ -29,6 +30,8 @@ export default function App() {
       <ThemeProvider theme={darkTheme}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
+
+        <Toaster />
 
         <QueryClientProvider client={queryClient}>
           <Router />
