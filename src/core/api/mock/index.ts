@@ -12,6 +12,23 @@ export const worker = setupWorker(
       return HttpResponse.json([...responseData]);
     }),
 
+    http.get("/client/:cpf", ({ params }) => {
+      const { cpf } = params;
+
+      if (!cpf) {
+        new HttpResponse("Cliente não encontrado", {
+          status: 404,
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        });
+      }
+
+      const responseData = clientRepository.get(cpf as string);
+
+      return HttpResponse.json(responseData);
+    }),
+
     http.post("/client", async ({ request }) => {
       const data = await request.json();
 
