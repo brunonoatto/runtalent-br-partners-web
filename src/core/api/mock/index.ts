@@ -3,6 +3,7 @@ import { setupWorker } from "msw/browser";
 import { http, HttpResponse } from "msw";
 import { ClientRepository } from "@core/repository";
 import { onlyNumbers } from "@shared/string";
+import { clientSchema } from "@core/schemas";
 
 const clientRepository = new ClientRepository();
 
@@ -37,11 +38,19 @@ export const worker = setupWorker(
       const data = await request.json();
 
       try {
+        const clientData = clientSchema.parse(data);
+
+        const isExist = clientRepository.get(clientData.cpf);
+
+        if (isExist) {
+          throw new Error("CPF já existe.");
+        }
+
         clientRepository.set(data);
 
         return HttpResponse.json(true);
       } catch (e: any) {
-        new HttpResponse(e.message, {
+        return new HttpResponse(e.message, {
           status: 400,
           headers: {
             "Content-Type": "text/plain",
@@ -58,7 +67,7 @@ export const worker = setupWorker(
 
         return HttpResponse.json(true);
       } catch (e: any) {
-        new HttpResponse(e.message, {
+        return new HttpResponse(e.message, {
           status: 400,
           headers: {
             "Content-Type": "text/plain",
@@ -75,7 +84,7 @@ export const worker = setupWorker(
 
         return HttpResponse.json(result);
       } catch (e: any) {
-        new HttpResponse(e.message, {
+        return new HttpResponse(e.message, {
           status: 400,
           headers: {
             "Content-Type": "text/plain",

@@ -53,12 +53,6 @@ export class ClientRepository extends Map<string, TClient> {
       throw new Error("Objeto Cliente inválido.");
     }
 
-    const isExist = this.get(parseResult.data.cpf);
-
-    if (isExist) {
-      throw new Error("CPF já existe.");
-    }
-
     super.set(parseResult.data.cpf, parseResult.data);
 
     this.save();

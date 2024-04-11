@@ -21,8 +21,12 @@ export const post = async (data: TClient) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).then<boolean>((response) => {
-    return response.json();
+  }).then(async (response) => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    return Promise.reject(await response.text());
   });
 };
 
@@ -33,15 +37,23 @@ export const update = async (data: TClient) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).then<boolean>((response) => {
-    return response.json();
+  }).then(async (response) => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    return Promise.reject(await response.text());
   });
 };
 
 export const remove = async (cpf: string) => {
   return fetch(`${URL_BASE}/${cpf}`, {
     method: "DELETE",
-  }).then<boolean>((response) => {
-    return response.json();
+  }).then(async (response) => {
+    if (response.ok) {
+      return response.json();
+    }
+
+    return Promise.reject(await response.text());
   });
 };
