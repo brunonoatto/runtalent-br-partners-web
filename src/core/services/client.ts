@@ -1,7 +1,7 @@
 import Api from "@core/api";
 import type { TClient } from "@core/schemas";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export const useGetClients = () => {
   return useQuery({
@@ -14,17 +14,15 @@ export const useGetClients = () => {
 };
 
 export const useGetClient = () => {
-  const [params] = useSearchParams();
-
-  const cpf = params.get("cpf");
+  const { cpf: cpfParam } = useParams();
 
   return useQuery({
-    enabled: !!cpf,
-    queryKey: ["useGetClient", cpf],
+    enabled: !!cpfParam,
+    queryKey: ["useGetClient", cpfParam],
     queryFn: async () => {
-      if (!cpf) return null;
+      if (!cpfParam) return null;
 
-      const clients = await Api.Client.getClient(cpf);
+      const clients = await Api.Client.getClient(cpfParam);
       return clients;
     },
   });
