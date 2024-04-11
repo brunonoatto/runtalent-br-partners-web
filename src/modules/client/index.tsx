@@ -34,7 +34,6 @@ export default function Client() {
   };
 
   useEffect(() => {
-    console.log("reset", { clientUpdated });
     if (clientUpdated) {
       setValue("name", clientUpdated.name);
       setValue("cpf", clientUpdated.cpf);

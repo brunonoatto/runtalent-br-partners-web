@@ -43,12 +43,11 @@ export default function ClientForm() {
     });
   };
 
-  const handleError = (e: any) => {
-    toastError(e.message);
+  const handleError = (e: unknown) => {
+    toastError(e as string);
   };
 
   const handleSettled = () => {
-    console.log("handleSettled");
     // loading(false)
   };
 
@@ -59,7 +58,6 @@ export default function ClientForm() {
   };
 
   const handleValid: SubmitHandler<TClient> = (formData) => {
-    console.log("handleValid", { formData });
     // loading(true);
     if (isRegister) {
       handlePostClient(formData);
