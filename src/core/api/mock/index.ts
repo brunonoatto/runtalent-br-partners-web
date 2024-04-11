@@ -9,7 +9,7 @@ export const worker = setupWorker(
     http.get("/client", () => {
       const responseData = clientRepository.values();
 
-      return HttpResponse.json(responseData);
+      return HttpResponse.json([...responseData]);
     }),
 
     http.post("/client", async ({ request }) => {
