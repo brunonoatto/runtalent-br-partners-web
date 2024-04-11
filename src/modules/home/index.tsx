@@ -96,7 +96,7 @@ export default function Home() {
             <TableBody>
               {data?.map((client) => (
                 <TableRow
-                  key={client.name}
+                  key={client.cpf}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
