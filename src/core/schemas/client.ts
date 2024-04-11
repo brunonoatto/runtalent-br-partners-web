@@ -27,7 +27,7 @@ export const clientSchema = z
     phone: z
       .string()
       .refine(
-        (value) => /^\([1-9]{2}\) (?:9[0-9])[0-9]{4}-[0-9]{4}$/.test(value),
+        (value) => /^\([1-9]{2}\) (?:9)([0-9]{4})\-([0-9]{4})$/.test(value),
         "Telefone inválido. (00) 90000-0000"
       ),
   })
