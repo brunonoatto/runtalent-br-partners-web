@@ -1,7 +1,7 @@
 export enum RoutesPathEnum {
   None = "",
   Home = "/",
-  cliente = "/cliente",
+  Cliente = "/cliente",
 }
 
 export type TRoutesPathEnum = `${RoutesPathEnum}`;
