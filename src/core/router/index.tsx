@@ -16,8 +16,12 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: `${RoutesPathEnum.cliente}/:cpf?`,
-    element: <Client />,
+    path: `${RoutesPathEnum.Cliente}/:cpf?`,
+    element: (
+      <Suspense fallback={<>Spinner...</>}>
+        <Client />
+      </Suspense>
+    ),
   },
   {
     path: "*",
