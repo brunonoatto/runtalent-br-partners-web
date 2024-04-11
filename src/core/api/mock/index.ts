@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { setupWorker } from "msw/browser";
 import { http, HttpResponse } from "msw";
 import { ClientRepository } from "@core/repository";
@@ -35,27 +36,52 @@ export const worker = setupWorker(
     http.post("/client", async ({ request }) => {
       const data = await request.json();
 
-      const responseData = clientRepository.set(data);
+      try {
+        clientRepository.set(data);
 
-      return HttpResponse.json(responseData);
+        return HttpResponse.json(true);
+      } catch (e: any) {
+        new HttpResponse(e.message, {
+          status: 400,
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        });
+      }
     }),
 
-    http.put("/client/", ({ request }) => {
-      const data = request.json();
+    http.put("/client", async ({ request }) => {
+      const data = await request.json();
 
-      const responseData = clientRepository.set(data);
+      try {
+        clientRepository.set(data);
 
-      return HttpResponse.json(responseData);
+        return HttpResponse.json(true);
+      } catch (e: any) {
+        new HttpResponse(e.message, {
+          status: 400,
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        });
+      }
     }),
 
     http.delete("/client/:cpf", ({ params }) => {
       const { cpf } = params;
 
-      const result = clientRepository.delete(cpf as string);
+      try {
+        const result = clientRepository.delete(cpf as string);
 
-      return HttpResponse.json({
-        result,
-      });
+        return HttpResponse.json(result);
+      } catch (e: any) {
+        new HttpResponse(e.message, {
+          status: 400,
+          headers: {
+            "Content-Type": "text/plain",
+          },
+        });
+      }
     }),
   ]
 );
