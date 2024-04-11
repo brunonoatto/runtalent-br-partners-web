@@ -41,7 +41,7 @@ export class ClientRepository extends Map<string, TClient> {
   private save() {
     const clients = this.values();
 
-    const sessionStorageValue = JSON.stringify(clients);
+    const sessionStorageValue = JSON.stringify([...clients]);
 
     sessionStorage.setItem(clientStorageKey, sessionStorageValue);
   }
