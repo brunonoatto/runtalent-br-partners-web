@@ -27,6 +27,7 @@ import { RoutesPathEnum } from "@core/router/types";
 import { useState } from "react";
 import type { TClient } from "@core/schemas";
 import useToast from "@core/store/useToast";
+import { DefaultError } from "@tanstack/react-query";
 
 export default function Home() {
   const { toastSuccess, toastError } = useToast();
@@ -55,8 +56,8 @@ export default function Home() {
         toastSuccess("Cliente deletado com sucesso!");
         refetch();
       },
-      onError: () => {
-        toastError("Não foi possível deletar Cliente.");
+      onError: (e: DefaultError) => {
+        toastError(e.message);
       },
       onSettled: () => {
         setModalData(undefined);
