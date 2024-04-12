@@ -26,6 +26,12 @@ export default function Client() {
   const form = useForm<TClient>({
     mode: "onSubmit",
     resolver: zodResolver(clientSchema),
+    defaultValues: {
+      cpf: "",
+      name: "",
+      email: "",
+      phone: "",
+    },
   });
   const { setValue } = form;
 
