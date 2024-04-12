@@ -4,6 +4,7 @@ import {
   TextField,
 } from "@mui/material";
 import { onlyNumbers } from "@shared/string";
+import { forwardRef } from "react";
 import { Control, Controller } from "react-hook-form";
 import InputMask from "react-input-mask";
 
@@ -15,27 +16,30 @@ type TFormFieldProps = TextFieldProps & {
   mask: string;
 };
 
-const MaskInput = ({ onChange, mask, ...props }: InputBaseComponentProps) => {
-  console.log({ props, onChange });
-  return (
-    <InputMask
-      mask={mask}
-      maskChar=" "
-      {...props}
-      onChange={(event) =>
-        onChange?.({
-          ...event,
-          target: {
-            ...event.target,
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            value: onlyNumbers(event.target.value),
-          },
-        })
-      }
-    />
-  );
-};
+const MaskInput = forwardRef<HTMLInputElement, InputBaseComponentProps>(
+  ({ onChange, mask, ...props }, ref) => {
+    console.log({ props, onChange });
+    return (
+      <InputMask
+        inputRef={ref}
+        mask={mask}
+        maskChar=" "
+        {...props}
+        onChange={(event) =>
+          onChange?.({
+            ...event,
+            target: {
+              ...event.target,
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              value: onlyNumbers(event.target.value),
+            },
+          })
+        }
+      />
+    );
+  }
+);
 
 export const InputMaskFormField = ({
   control,
