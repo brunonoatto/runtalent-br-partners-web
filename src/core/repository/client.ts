@@ -63,10 +63,11 @@ export class ClientRepository extends Map<string, TClient> {
   delete(key: string): boolean {
     const result = super.delete(key);
 
-    if (result) {
-      this.save();
+    if (!result) {
+      return false;
     }
 
-    return result;
+    this.save();
+    return true;
   }
 }
