@@ -66,7 +66,19 @@ export default function Client() {
           {!isRegister && isLoading && <CircularProgress sx={{ mx: "auto" }} />}
 
           {!isRegister && !isLoading && !clientUpdated && (
-            <Alert severity="error">Cliente não cadastrado.</Alert>
+            <Alert severity="error">
+              Cliente não cadastrado.
+              <Button
+                type="button"
+                variant="text"
+                color="error"
+                size="small"
+                onClick={handleGoHome}
+                sx={{ p: 0 }}
+              >
+                Voltar
+              </Button>
+            </Alert>
           )}
 
           {(isRegister || (!isLoading && clientUpdated)) && <ClientForm />}

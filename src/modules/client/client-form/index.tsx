@@ -8,8 +8,10 @@ import { usePostClient, useUpdateClient } from "@core/services/client";
 import { Button, Grid, Paper } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { RoutesPathEnum } from "@core/router/types";
-import { onlyNumbers } from "@shared/string";
 import useToast from "@core/store/useToast";
+import { InputFormField } from "@shared/components/input-form-field";
+import { InputMaskFormField } from "@shared/components/input-mask-form-field";
+import { DefaultError } from "@tanstack/react-query";
 
 export default function ClientForm() {
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ export default function ClientForm() {
 
   const isRegister = !cpfParam;
 
-  const { register, handleSubmit } = useFormContext<TClient>();
+  const { handleSubmit, control } = useFormContext<TClient>();
 
   const handlePostClient = (client: TClient) => {
     mutatePostClient(client, {
@@ -43,8 +45,8 @@ export default function ClientForm() {
     });
   };
 
-  const handleError = (e: unknown) => {
-    toastError(e as string);
+  const handleError = (e: DefaultError) => {
+    toastError(e.message);
   };
 
   const handleSettled = () => {
@@ -79,54 +81,31 @@ export default function ClientForm() {
       <form onSubmit={handleSubmit(handleValid, handleInvalid)}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            {/* <TextField
-                variant="standard"
-                label="Nome"
-                {...register("name")}
-              /> */}
-            Name
-            <input type="text" {...register("name")} />
+            <InputFormField control={control} label="Nome" name="name" />
           </Grid>
           <Grid item xs={12} md={6}>
-            {/* <TextMaskCustom
-                label="CPF"
-                inputProps={{
-                  mask: "000.000.000-00",
-                  ...register("cpf", {
-                    setValueAs: onlyNumbers,
-                  }),
-                }}
-              /> */}
-            CPF
-            <input
-              type="text"
-              {...register("cpf", {
-                setValueAs: onlyNumbers,
-                disabled: !isRegister,
-              })}
+            <InputMaskFormField
+              control={control}
+              label="CPF"
+              name="cpf"
+              mask="999.999.999-99"
+              disabled={!isRegister}
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            {/* <TextField
-                variant="standard"
-                label="E-mail"
-                {...register("email")}
-              /> */}
-            Email
-            <input type="email" {...register("email")} />
+            <InputFormField
+              control={control}
+              label="E-mail"
+              name="email"
+              type="email"
+            />
           </Grid>
           <Grid item xs={12} md={6}>
-            {/* <TextMaskCustom
-                label="Telefone"
-                inputProps={{
-                  mask: "(00) 00000-0000",
-                  ...register("phone"),
-                }}
-              /> */}
-            Telefone
-            <input
-              type="text"
-              {...register("phone", { setValueAs: onlyNumbers })}
+            <InputMaskFormField
+              control={control}
+              label="Telefone"
+              name="phone"
+              mask="(99) 99999-9999"
             />
           </Grid>
           <Grid
