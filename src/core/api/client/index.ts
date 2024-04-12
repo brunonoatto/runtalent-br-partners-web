@@ -1,17 +1,20 @@
+import type { TResponseBase } from "@core/api/types";
 import { TClient } from "@core/schemas";
 
 const URL_BASE = "http://localhost:5173/client";
 
 export const get = async () => {
-  return fetch(URL_BASE).then<TClient[]>((response) => {
+  return fetch(URL_BASE).then<TResponseBase<TClient[]>>((response) => {
     return response.json();
   });
 };
 
 export const getClient = async (cpf: string) => {
-  return fetch(`${URL_BASE}/${cpf}`).then<TClient>((response) => {
-    return response.json();
-  });
+  return fetch(`${URL_BASE}/${cpf}`).then<TResponseBase<TClient>>(
+    (response) => {
+      return response.json();
+    }
+  );
 };
 
 export const post = async (data: TClient) => {
@@ -21,12 +24,12 @@ export const post = async (data: TClient) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).then(async (response) => {
+  }).then<TResponseBase<boolean>>(async (response) => {
     if (response.ok) {
       return response.json();
     }
 
-    return Promise.reject(await response.text());
+    return Promise.reject(await response.json());
   });
 };
 
@@ -37,23 +40,23 @@ export const update = async (data: TClient) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
-  }).then(async (response) => {
+  }).then<TResponseBase<boolean>>(async (response) => {
     if (response.ok) {
       return response.json();
     }
 
-    return Promise.reject(await response.text());
+    return Promise.reject(await response.json());
   });
 };
 
 export const remove = async (cpf: string) => {
   return fetch(`${URL_BASE}/${cpf}`, {
     method: "DELETE",
-  }).then(async (response) => {
+  }).then<TResponseBase<boolean>>(async (response) => {
     if (response.ok) {
       return response.json();
     }
 
-    return Promise.reject(await response.text());
+    return Promise.reject(await response.json());
   });
 };

@@ -4,6 +4,7 @@ import { http, HttpResponse } from "msw";
 import { ClientRepository } from "@core/repository";
 import { onlyNumbers } from "@shared/string";
 import { clientSchema } from "@core/schemas";
+import ResponseData from "@core/api/mock/ResponseData";
 
 const clientRepository = new ClientRepository();
 
@@ -12,7 +13,7 @@ export const worker = setupWorker(
     http.get("/client", () => {
       const responseData = clientRepository.values();
 
-      return HttpResponse.json([...responseData]);
+      return ResponseData.json([...responseData]);
     }),
 
     http.get("/client/:cpf", ({ params }) => {
@@ -31,7 +32,7 @@ export const worker = setupWorker(
 
       const responseData = clientRepository.get(cpfValue as string);
 
-      return HttpResponse.json(responseData);
+      return ResponseData.json(responseData);
     }),
 
     http.post("/client", async ({ request }) => {
@@ -48,14 +49,9 @@ export const worker = setupWorker(
 
         clientRepository.set(data);
 
-        return HttpResponse.json(true);
+        return ResponseData.json(true);
       } catch (e: any) {
-        return new HttpResponse(e.message, {
-          status: 400,
-          headers: {
-            "Content-Type": "text/plain",
-          },
-        });
+        return ResponseData.error(e.message);
       }
     }),
 
@@ -65,14 +61,10 @@ export const worker = setupWorker(
       try {
         clientRepository.set(data);
 
-        return HttpResponse.json(true);
+        return ResponseData.json(true);
       } catch (e: any) {
-        return new HttpResponse(e.message, {
-          status: 400,
-          headers: {
-            "Content-Type": "text/plain",
-          },
-        });
+        console.log("erro api", { e });
+        return ResponseData.error(e.message);
       }
     }),
 
@@ -80,16 +72,19 @@ export const worker = setupWorker(
       const { cpf } = params;
 
       try {
-        const result = clientRepository.delete(cpf as string);
+        const cpfValue = cpf && onlyNumbers(cpf as string);
 
-        return HttpResponse.json(result);
+        const result = clientRepository.delete(cpfValue);
+
+        if (!result) {
+          return ResponseData.error(
+            "Não foi possível remover o cliente enviado."
+          );
+        }
+
+        return ResponseData.json(true);
       } catch (e: any) {
-        return new HttpResponse(e.message, {
-          status: 400,
-          headers: {
-            "Content-Type": "text/plain",
-          },
-        });
+        return ResponseData.error(e.message);
       }
     }),
   ]
